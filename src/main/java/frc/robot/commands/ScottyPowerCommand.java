@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ScottySubsystem;
 
-public class FireCommand extends CommandBase {
+public class ScottyPowerCommand extends CommandBase {
   ScottySubsystem m_scottySubsystem; 
   double m_power; 
 
-  public FireCommand(ScottySubsystem scottySubsystem, double power) {
+  public ScottyPowerCommand(ScottySubsystem scottySubsystem, double power) {
     m_scottySubsystem = scottySubsystem; 
     m_power = power; 
     addRequirements(scottySubsystem);

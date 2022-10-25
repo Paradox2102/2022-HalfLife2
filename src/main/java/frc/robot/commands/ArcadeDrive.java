@@ -4,11 +4,15 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.Constants;
 import frc.robot.Drivetrain;
 
 public class ArcadeDrive extends CommandBase {
@@ -17,6 +21,11 @@ public class ArcadeDrive extends CommandBase {
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
+
+  private final TalonSRX m_frontLeft = new TalonSRX(Constants.k_climber);
+  private final TalonSRX m_frontRight = new TalonSRX(Constants.k_climbFollower);
+  private final TalonSRX m_backLeft = new TalonSRX(Constants.k_intake);
+  private final TalonSRX m_backRight = new TalonSRX(Constants.k_scotty);
 
   private Drivetrain m_swerve;
   private Joystick m_joystick;
@@ -57,6 +66,10 @@ public class ArcadeDrive extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_frontLeft.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute); 
+    m_frontRight.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute); 
+    m_backLeft.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute); 
+    m_backRight.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute); 
   }
 
   // Called every time the scheduler runs while the command is scheduled.

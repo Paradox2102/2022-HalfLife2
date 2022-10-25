@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -23,7 +22,7 @@ public class SwerveModule {
 
   private final CANSparkMax m_driveMotor;
   private final CANSparkMax m_turningMotor;
-
+ 
   private final RelativeEncoder m_driveEncoder;
   private final RelativeEncoder m_turningEncoder;
 
