@@ -12,8 +12,9 @@ import frc.robot.subsystems.ClimberSubsystem;
 public class ClimbCommand extends CommandBase {
   ClimberSubsystem m_climbSubsystem; 
   DoubleSupplier m_power; 
+
   public ClimbCommand(ClimberSubsystem climberSubsystem, DoubleSupplier power) {
-    // m_power power; 
+    m_power = power; 
     m_climbSubsystem = climberSubsystem; 
     addRequirements(climberSubsystem);
   }
@@ -25,7 +26,7 @@ public class ClimbCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_climbSubsystem.setClimbPower(-m_power.getAsDouble()); 
+    m_climbSubsystem.setClimbPower(-m_power.getAsDouble()*0.8);
   }
 
   // Called once the command ends or is interrupted.

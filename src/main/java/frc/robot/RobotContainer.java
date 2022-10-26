@@ -12,18 +12,29 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.ResetGyro;
 import frc.robot.commands.SetAzimuthZero;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class RobotContainer {
     DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+    ClimberSubsystem m_climberSubsystem = new ClimberSubsystem(); 
 
     Joystick m_stick = new Joystick(0);
+//     XboxController m_stick = new XboxController(0); 
+    
+    JoystickButton m_intake = new JoystickButton(m_stick, 1); 
+    JoystickButton m_scotty = new JoystickButton(m_stick, 2); 
+    JoystickButton m_shooter = new JoystickButton(m_stick, 3); 
+    JoystickButton m_climb = new JoystickButton(m_stick, 3); 
 
     // The robot's subsystems and commands are defined here...
 
@@ -31,7 +42,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        m_driveSubsystem.setDefaultCommand(new ArcadeDrive(m_stick, m_driveSubsystem));
+        // m_driveSubsystem.setDefaultCommand(new ArcadeDrive(m_stick, m_driveSubsystem));
         m_driveSubsystem.loadAndSetAzimuthZeroReference();
         // Configure the button bindings
         configureButtonBindings();
@@ -40,6 +51,7 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
+        m_climb.whileHeld(new ClimbCommand(m_climberSubsystem, () -> m_stick.getY())); 
     }
 
     public Command getAutonomousCommand() {
@@ -75,6 +87,7 @@ public class RobotContainer {
                 thetaController,
                 m_driveSubsystem::setModuleStates,
                 m_driveSubsystem);
+                
 
         // Reset odometry to the starting pose of the trajectory.
         m_driveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());

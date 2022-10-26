@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,7 +19,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void setClimbPower(double power){
-    
+    m_climb.set(ControlMode.PercentOutput, power); 
   }
 
   @Override
