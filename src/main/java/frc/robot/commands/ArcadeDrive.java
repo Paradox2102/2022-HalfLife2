@@ -4,15 +4,12 @@
 
 package frc.robot.commands;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.Constants;
 import frc.robot.Drivetrain;
 
 public class ArcadeDrive extends CommandBase {
@@ -22,43 +19,65 @@ public class ArcadeDrive extends CommandBase {
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
-  private final TalonSRX m_frontLeft = new TalonSRX(Constants.k_climber);
-  private final TalonSRX m_frontRight = new TalonSRX(Constants.k_climbFollower);
-  private final TalonSRX m_backLeft = new TalonSRX(Constants.k_intake);
-  private final TalonSRX m_backRight = new TalonSRX(Constants.k_scotty);
-
   private Drivetrain m_swerve;
   private Joystick m_joystick;
+  private XboxController m_xbox; 
+
+  private final boolean k_fieldRelative = true; 
+  private final static double k_deadZone = 0.02; 
 
   public ArcadeDrive(Joystick joystick, DriveSubsystem driveSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_joystick = joystick;
     m_swerve = driveSubsystem.getSwerve();
+    addRequirements(driveSubsystem);
+  }
 
+  public ArcadeDrive(XboxController xbox, DriveSubsystem driveSubsystem) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    m_xbox = xbox;
+    m_swerve = driveSubsystem.getSwerve();
     addRequirements(driveSubsystem);
   }
 
   private void driveWithJoystick(boolean fieldRelative) {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
-    final var xSpeed = -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_joystick.getY(), 0.02))
+    final var xSpeed = -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_joystick.getY(), k_deadZone))
         * Drivetrain.kMaxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
-    final var ySpeed = -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_joystick.getX(), 0.02))
+    final var ySpeed = -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_joystick.getX(), k_deadZone))
     * Drivetrain.kMaxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
-    final var rot = -m_rotLimiter.calculate(MathUtil.applyDeadband(m_joystick.getZ(), 0.02))
+    final var rot = -m_rotLimiter.calculate(MathUtil.applyDeadband(m_joystick.getZ(), k_deadZone))
     * Drivetrain.kMaxAngularSpeed;
 
     // final var rot = -m_rotLimiter.calculate(MathUtil.applyDeadband(0.5, 0.02))
     // * Drivetrain.kMaxAngularSpeed;
+
+    // System.out.println(String.format("xspeed=%f, yspeed=%f, rot=%f, fieldRelative=%b", xSpeed, ySpeed, rot, fieldRelative)); 
+
+    m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
+  }
+
+  private void driveWithXbox(boolean fieldRelative) {
+    final var xSpeed = -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_xbox.getLeftY(), k_deadZone))
+    * Drivetrain.kMaxSpeed;
+
+    final var ySpeed = -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_xbox.getLeftX(), k_deadZone))
+    * Drivetrain.kMaxSpeed;
+
+    final var rot = -m_rotLimiter.calculate(MathUtil.applyDeadband(m_xbox.getRightX(), k_deadZone))
+    * Drivetrain.kMaxAngularSpeed;
+
+    // System.out.println(String.format("xspeed=%f, yspeed=%f, rot=%f, fieldRelative=%b", xSpeed, ySpeed, rot, fieldRelative)); 
 
     m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
   }
@@ -66,16 +85,17 @@ public class ArcadeDrive extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_frontLeft.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute); 
-    m_frontRight.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute); 
-    m_backLeft.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute); 
-    m_backRight.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute); 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    driveWithJoystick(true);
+    if (m_joystick != null){   
+      driveWithJoystick(k_fieldRelative);
+    }
+    else {
+      driveWithXbox(k_fieldRelative); 
+    }
   }
 
   // Called once the command ends or is interrupted.

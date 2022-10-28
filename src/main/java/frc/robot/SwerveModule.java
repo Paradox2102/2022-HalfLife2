@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -25,6 +27,11 @@ public class SwerveModule {
  
   private final RelativeEncoder m_driveEncoder;
   private final RelativeEncoder m_turningEncoder;
+  
+  // private final TalonSRX m_frontLeftEncoder = new TalonSRX(Constants.k_climber);
+  // private final TalonSRX m_frontRightEncoder = new TalonSRX(Constants.k_climbFollower);
+  // private final TalonSRX m_backLeftEncoder = new TalonSRX(Constants.k_intake);
+  // private final TalonSRX m_backRightEncoder = new TalonSRX(Constants.k_scotty);
 
   private String m_smartDashboardName;
   private String m_name;
@@ -51,6 +58,10 @@ public class SwerveModule {
 
     m_driveEncoder = m_driveMotor.getEncoder();
     m_turningEncoder = m_turningMotor.getEncoder();
+    // m_frontLeftEncoder.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute); 
+    // m_frontRightEncoder.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute); 
+    // m_backLeftEncoder.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute); 
+    // m_backRightEncoder.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute); 
 
     setPID(m_driveMotor.getPIDController(), Constants.k_F, Constants.k_P, Constants.k_I, Constants.k_iZone);
   }
@@ -80,12 +91,13 @@ public class SwerveModule {
   }
 
   private double getAngleDegrees() {
-    return (360.0 / 112 * m_turningEncoder.getPosition()) - m_azimuthZero; 
-    // return (m_turningEncoder.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute)); 
+    return (360.0 / 112 * m_turningEncoder.getPosition()) - m_azimuthZero;
+    // return m_frontLeftEncoder.getSelectedPosition() - m_azimuthZero; 
   }
 
   private double getRawAngleDegrees() {
     return (360.0 / 112 * (m_turningEncoder.getPosition()));
+    // return m_frontLeftEncoder.getSelectedPosition(); 
   }
 
   private double getVelocityMPS() {

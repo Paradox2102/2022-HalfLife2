@@ -33,6 +33,10 @@ public class GyroWrapper implements Gyro {
         m_gyro.setYaw(0);
     }
 
+    public void resetYaw(double angle) {
+        m_gyro.setYaw(angle); //in degrees 
+    }
+
     @Override
     public double getAngle() {
         double[] ypr = new double[3];

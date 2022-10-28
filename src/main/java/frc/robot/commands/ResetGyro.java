@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -20,7 +21,8 @@ public class ResetGyro extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_driveSubsystem.getSwerve().resetGyro();
+    double angle = SmartDashboard.getNumber("Starting Angle", 0); 
+    m_driveSubsystem.getSwerve().resetGyro(angle);
     //System.out.println("ResetGyro Initialize"); 
   }
 

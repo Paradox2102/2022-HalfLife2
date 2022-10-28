@@ -14,6 +14,7 @@ public class ScottyPowerCommand extends CommandBase {
   public ScottyPowerCommand(ScottySubsystem scottySubsystem, double power) {
     m_scottySubsystem = scottySubsystem; 
     m_power = power; 
+
     addRequirements(scottySubsystem);
   }
 

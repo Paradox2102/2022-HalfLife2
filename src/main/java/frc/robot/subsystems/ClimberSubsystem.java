@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,6 +17,9 @@ public class ClimberSubsystem extends SubsystemBase {
   
   public ClimberSubsystem() {
     m_climbFollower.follow(m_climb); 
+
+    m_climb.setNeutralMode(NeutralMode.Brake);
+    m_climbFollower.setNeutralMode(NeutralMode.Brake);
   }
 
   public void setClimbPower(double power){

@@ -13,28 +13,50 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Autos.DriveAuto;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ResetGyro;
+import frc.robot.commands.ScottyPowerCommand;
 import frc.robot.commands.SetAzimuthZero;
+import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ScottySubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 public class RobotContainer {
     DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+    IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(); 
+    ScottySubsystem m_scottySubsystem = new ScottySubsystem(); 
+    ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(); 
     ClimberSubsystem m_climberSubsystem = new ClimberSubsystem(); 
 
-    Joystick m_stick = new Joystick(0);
-//     XboxController m_stick = new XboxController(0); 
+    // Joystick m_stick = new Joystick(0);
+    XboxController m_stickOne = new XboxController(0); 
+    Joystick m_stickTwo = new Joystick(1); 
     
-    JoystickButton m_intake = new JoystickButton(m_stick, 1); 
-    JoystickButton m_scotty = new JoystickButton(m_stick, 2); 
-    JoystickButton m_shooter = new JoystickButton(m_stick, 3); 
-    JoystickButton m_climb = new JoystickButton(m_stick, 3); 
+    //Driver 1 
+    JoystickButton m_intake = new JoystickButton(m_stickOne, 5); 
+    JoystickButton m_outake = new JoystickButton(m_stickOne, 6); 
+
+    //Driver 2 
+    JoystickButton m_fire = new JoystickButton(m_stickTwo, 1); //right bumper 
+    JoystickButton m_spinUp = new JoystickButton(m_stickTwo, 2); //button a 
+    JoystickButton m_reverseScotty = new JoystickButton(m_stickTwo, 8); //button b 
+    JoystickButton m_climb = new JoystickButton(m_stickTwo, 3);  
+
+//ur mom gay <3 - Julia Snider
+//egg - luca
+
+//     JoystickButton m_driveAuto = new JoystickButton(m_stickOne, 6); 
 
     // The robot's subsystems and commands are defined here...
 
@@ -42,7 +64,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        // m_driveSubsystem.setDefaultCommand(new ArcadeDrive(m_stick, m_driveSubsystem));
+        m_driveSubsystem.setDefaultCommand(new ArcadeDrive(m_stickOne, m_driveSubsystem));
         m_driveSubsystem.loadAndSetAzimuthZeroReference();
         // Configure the button bindings
         configureButtonBindings();
@@ -51,7 +73,20 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        m_climb.whileHeld(new ClimbCommand(m_climberSubsystem, () -> m_stick.getY())); 
+        // driver 1 
+        m_intake.whileHeld(new IntakeCommand(m_intakeSubsystem, 0.7));
+        m_outake.whileHeld(new IntakeCommand(m_intakeSubsystem, -0.7));
+
+        // driver 2 
+        m_spinUp.toggleWhenPressed(new ShooterCommand(m_shooterSubsystem, 0.75, 0.5)); 
+        m_fire.whileHeld(new ScottyPowerCommand(m_scottySubsystem, 1)); 
+        m_reverseScotty.whileHeld(new ScottyPowerCommand(m_scottySubsystem, -1)); 
+        m_climb.whileHeld(new ClimbCommand(m_climberSubsystem, () -> m_stickTwo.getY()));
+
+        // test 
+        // m_driveAuto.toggleWhenPressed(new DriveAuto(m_driveSubsystem)); 
+
+        SmartDashboard.putNumber("Starting Angle", 0); 
     }
 
     public Command getAutonomousCommand() {
@@ -100,3 +135,5 @@ public class RobotContainer {
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
             Math.PI, Math.PI);
 }
+
+//i lost the game 

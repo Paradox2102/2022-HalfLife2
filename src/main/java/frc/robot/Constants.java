@@ -42,13 +42,13 @@ public class Constants {
     public final static int k_climbFollower = 0; 
 
     //Intake Talon IDs (Used for Absolute Encoders on Swerve Drive)
-    public final static int k_intake = 0; 
+    public final static int k_intake = 13; 
 
     //Serializer Talon IDs (Used for Absolute Encoders on Swerve Drive)
-    public final static int k_scotty = 0; 
+    public final static int k_scotty = 5; 
 
     //Shooter Talon IDs
-    public final static int k_shooter = 0; 
-    public final static int k_shooterFollower = 0; 
+    public final static int k_backShooter = 12; 
+    public final static int k_frontShooter = 15; 
 
 }

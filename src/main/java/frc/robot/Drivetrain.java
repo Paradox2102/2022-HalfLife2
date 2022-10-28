@@ -48,7 +48,7 @@ public class Drivetrain {
   public final SwerveModule m_backRight;
 
   // private final AnalogGyro m_gyro = new AnalogGyro(0);
-  public final Gyro m_gyro = new GyroWrapper(new PigeonIMU(0));
+  public final GyroWrapper m_gyro = new GyroWrapper(new PigeonIMU(0));
 
   final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
@@ -96,8 +96,8 @@ public class Drivetrain {
         m_backRight.getState());
   }
 
-  public void resetGyro() {
-    m_gyro.reset();
-    m_odometry.resetPosition(new Pose2d(0, 0, Rotation2d.fromDegrees(0)), Rotation2d.fromDegrees(0));
+  public void resetGyro(double angle) {
+    m_gyro.resetYaw(angle);
+    m_odometry.resetPosition(new Pose2d(0, 0, Rotation2d.fromDegrees(angle)), Rotation2d.fromDegrees(angle));
   }
 }
